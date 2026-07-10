@@ -6,6 +6,7 @@ import {
   type LucideIcon,
   Network,
   Radio,
+  RadioTower,
   Waypoints,
 } from 'lucide-react'
 import type { ComponentType } from 'react'
@@ -14,6 +15,7 @@ import { Base64Tool } from '@/pages/tools/base64'
 import { Ipv4SubnetTool } from '@/pages/tools/ipv4-subnet'
 import { Ipv6SubnetTool } from '@/pages/tools/ipv6-subnet'
 import { NatoTool } from '@/pages/tools/nato'
+import { RfChannelTool } from '@/pages/tools/rf-channel'
 import { ScheduleTool } from '@/pages/tools/schedule'
 import { UuidTool } from '@/pages/tools/uuid'
 
@@ -96,5 +98,13 @@ export const tools: Tool[] = [
       'Convert between cron, systemd OnCalendar and a date/time picker.',
     icon: CalendarClock,
     component: ScheduleTool,
+  },
+  {
+    id: 'rf-channel',
+    name: 'RF Channel',
+    path: '/tools/rf-channel',
+    description: 'Generate evenly spaced RF channels from a base frequency.',
+    icon: RadioTower,
+    component: RfChannelTool,
   },
 ]
