@@ -1,8 +1,12 @@
 import { PocketKnife } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
+import { GithubIcon } from '@/components/icons/github'
 import { ModeToggle } from '@/components/mode-toggle'
+import { Button } from '@/components/ui/button'
 import { tools } from '@/lib/tools'
 import { cn } from '@/lib/utils'
+
+const REPO_URL = 'https://github.com/dusansimic/swiss-developers-knife'
 
 /** The sidebar's inner content, reused by the desktop aside and mobile drawer. */
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
@@ -49,7 +53,16 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
 
       <div className="flex items-center justify-between border-t p-3">
-        <span className="text-xs text-muted-foreground">Theme</span>
+        <Button
+          asChild
+          variant="ghost"
+          size="icon"
+          aria-label="GitHub repository"
+        >
+          <a href={REPO_URL} target="_blank" rel="noreferrer">
+            <GithubIcon className="h-5 w-5" />
+          </a>
+        </Button>
         <ModeToggle />
       </div>
     </div>
