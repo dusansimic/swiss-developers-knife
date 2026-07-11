@@ -5,6 +5,7 @@ import {
   FileDigit,
   Fingerprint,
   Hash,
+  Languages,
   type LucideIcon,
   Network,
   Radio,
@@ -24,6 +25,7 @@ import { LicensesTool } from '@/pages/tools/licenses'
 import { NatoTool } from '@/pages/tools/nato'
 import { RfChannelTool } from '@/pages/tools/rf-channel'
 import { ScheduleTool } from '@/pages/tools/schedule'
+import { SerbianPhoneticTool } from '@/pages/tools/serbian-phonetic'
 import { UnitConverterTool } from '@/pages/tools/unit-converter'
 import { UuidTool } from '@/pages/tools/uuid'
 
@@ -88,6 +90,15 @@ export const tools: Tool[] = [
     description: 'Spell text with the NATO phonetic alphabet.',
     icon: Radio,
     component: NatoTool,
+  },
+  {
+    id: 'serbian-phonetic',
+    name: 'Serbian Phonetic',
+    path: '/tools/serbian-phonetic',
+    description:
+      'Spell text with the Serbian phonetic alphabet (Latin/Cyrillic).',
+    icon: Languages,
+    component: SerbianPhoneticTool,
   },
   {
     id: 'uuid',
