@@ -59,7 +59,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 /** Persistent sidebar, shown from the `md` breakpoint up. */
 export function Sidebar() {
   return (
-    <aside className="hidden h-svh w-64 shrink-0 border-r bg-sidebar text-sidebar-foreground md:block">
+    <aside className="sticky top-0 hidden h-svh w-64 shrink-0 self-start border-r bg-sidebar text-sidebar-foreground md:block">
       <SidebarContent />
     </aside>
   )
