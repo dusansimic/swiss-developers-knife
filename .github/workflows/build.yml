@@ -1,0 +1,14 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  image:
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/build-image.yml
+    with:
+      tags: main

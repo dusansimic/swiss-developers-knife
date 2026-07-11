@@ -5,15 +5,12 @@ on:
     tags:
       - 'v*'
 
-permissions:
-  contents: write
-  packages: write
-
 jobs:
-  release:
+  archive:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
-      IMAGE: ghcr.io/${{ github.repository }}
       ARCHIVE: swiss-developers-knife-${{ github.ref_name }}.tar.gz
     steps:
       - name: Checkout
@@ -37,28 +34,15 @@ jobs:
       - name: Archive dist
         run: tar -czf "$ARCHIVE" -C dist .
 
-      - name: Build image with buildah
-        id: build
-        uses: redhat-actions/buildah-build@v2
-        with:
-          image: ${{ env.IMAGE }}
-          tags: ${{ github.ref_name }} latest
-          containerfiles: ./Containerfile
-
-      - name: Log in to GHCR
-        uses: redhat-actions/podman-login@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Push image to GHCR
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: ${{ steps.build.outputs.image }}
-          tags: ${{ steps.build.outputs.tags }}
-
       - name: Create GitHub release with dist archive
         uses: softprops/action-gh-release@v3
         with:
           files: ${{ env.ARCHIVE }}
+
+  image:
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/build-image.yml
+    with:
+      tags: ${{ github.ref_name }} latest
