@@ -2,6 +2,7 @@ import {
   ArrowLeftRight,
   Binary,
   CalendarClock,
+  Contact,
   FileDigit,
   Fingerprint,
   Hash,
@@ -26,6 +27,7 @@ import { RfChannelTool } from '@/pages/tools/rf-channel'
 import { ScheduleTool } from '@/pages/tools/schedule'
 import { UnitConverterTool } from '@/pages/tools/unit-converter'
 import { UuidTool } from '@/pages/tools/uuid'
+import { VcardTool } from '@/pages/tools/vcard'
 
 /**
  * Central registry of every tool in the app.
@@ -146,5 +148,14 @@ export const tools: Tool[] = [
     description: 'Copy full text of BSD, GPL and LGPL open source licenses.',
     icon: Scale,
     component: LicensesTool,
+  },
+  {
+    id: 'vcard',
+    name: 'vCard',
+    path: '/tools/vcard',
+    description:
+      'Generate a contact vCard with a downloadable file and QR code.',
+    icon: Contact,
+    component: VcardTool,
   },
 ]
