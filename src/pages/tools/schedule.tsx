@@ -1,6 +1,7 @@
 import { RotateCcw, TriangleAlert } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -28,7 +29,11 @@ import { cn } from '@/lib/utils'
 const INITIAL_CRON = '0 9 * * 1-5'
 const HOURS = Array.from({ length: 24 }, (_, h) => h)
 const MINUTES = Array.from({ length: 60 }, (_, m) => m)
-const DAYS_OF_MONTH = Array.from({ length: 31 }, (_, d) => d + 1)
+// A fixed 31-day month that starts on a Monday, so with a Monday week start the
+// calendar renders a clean 1-31 grid (day-of-month is month-agnostic here).
+const DOM_MONTH = new Date(2021, 2, 1)
+const DOM_YEAR = 2021
+const DOM_MONTH_INDEX = 2
 // Weekday buttons in ISO order; values are cron numbers (Sun = 0).
 const WEEKDAYS = [
   { label: 'Mon', value: 1 },
@@ -96,13 +101,6 @@ export function ScheduleTool() {
   const dowSet = new Set(
     (expandField(schedule.dow, 0, 7) ?? []).map((v) => (v === 7 ? 0 : v)),
   )
-
-  function toggleDom(day: number) {
-    const next = new Set(domSet)
-    if (next.has(day)) next.delete(day)
-    else next.add(day)
-    applySchedule(withValues(schedule, 'dom', [...next]))
-  }
 
   function toggleDow(value: number) {
     const next = new Set(dowSet)
@@ -181,23 +179,31 @@ export function ScheduleTool() {
             Reset
           </Button>
         </div>
-        <div className="grid grid-cols-7 gap-1">
-          {DAYS_OF_MONTH.map((day) => (
-            <button
-              key={day}
-              type="button"
-              onClick={() => toggleDom(day)}
-              className={cn(
-                'flex h-9 items-center justify-center rounded-md border text-sm transition-colors',
-                domSet.has(day)
-                  ? 'border-primary bg-primary text-primary-foreground'
-                  : 'hover:bg-accent hover:text-accent-foreground',
-              )}
-            >
-              {day}
-            </button>
-          ))}
-        </div>
+        <Calendar
+          mode="multiple"
+          defaultMonth={DOM_MONTH}
+          weekStartsOn={1}
+          showOutsideDays={false}
+          disableNavigation
+          selected={[...domSet].map(
+            (d) => new Date(DOM_YEAR, DOM_MONTH_INDEX, d),
+          )}
+          onSelect={(dates) =>
+            applySchedule(
+              withValues(
+                schedule,
+                'dom',
+                (dates ?? []).map((d) => d.getDate()),
+              ),
+            )
+          }
+          classNames={{
+            nav: 'hidden',
+            month_caption: 'hidden',
+            weekdays: 'hidden',
+          }}
+          className="w-fit rounded-md border"
+        />
         <p className="text-xs text-muted-foreground">
           {schedule.dom.wildcard
             ? 'Every day of the month (*).'
