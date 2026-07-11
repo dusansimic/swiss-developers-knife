@@ -1,4 +1,5 @@
 import {
+  ArrowLeftRight,
   Binary,
   CalendarClock,
   FileDigit,
@@ -13,6 +14,7 @@ import {
 import type { ComponentType } from 'react'
 import { Base62Tool } from '@/pages/tools/base62'
 import { Base64Tool } from '@/pages/tools/base64'
+import { FormatConverterTool } from '@/pages/tools/format-converter'
 import { HashingTool } from '@/pages/tools/hashing'
 import { Ipv4SubnetTool } from '@/pages/tools/ipv4-subnet'
 import { Ipv6SubnetTool } from '@/pages/tools/ipv6-subnet'
@@ -116,5 +118,13 @@ export const tools: Tool[] = [
     description: 'Hash text or files with MD5, SHA-1, SHA-2 and SHA-3.',
     icon: FileDigit,
     component: HashingTool,
+  },
+  {
+    id: 'format-converter',
+    name: 'JSON / YAML / TOML',
+    path: '/tools/format-converter',
+    description: 'Convert structured data between JSON, YAML and TOML.',
+    icon: ArrowLeftRight,
+    component: FormatConverterTool,
   },
 ]
