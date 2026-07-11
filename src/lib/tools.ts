@@ -1,6 +1,7 @@
 import {
   Binary,
   CalendarClock,
+  FileDigit,
   Fingerprint,
   Hash,
   type LucideIcon,
@@ -12,6 +13,7 @@ import {
 import type { ComponentType } from 'react'
 import { Base62Tool } from '@/pages/tools/base62'
 import { Base64Tool } from '@/pages/tools/base64'
+import { HashingTool } from '@/pages/tools/hashing'
 import { Ipv4SubnetTool } from '@/pages/tools/ipv4-subnet'
 import { Ipv6SubnetTool } from '@/pages/tools/ipv6-subnet'
 import { NatoTool } from '@/pages/tools/nato'
@@ -106,5 +108,13 @@ export const tools: Tool[] = [
     description: 'Generate evenly spaced RF channels from a base frequency.',
     icon: RadioTower,
     component: RfChannelTool,
+  },
+  {
+    id: 'hashing',
+    name: 'Hashing',
+    path: '/tools/hashing',
+    description: 'Hash text or files with MD5, SHA-1, SHA-2 and SHA-3.',
+    icon: FileDigit,
+    component: HashingTool,
   },
 ]
