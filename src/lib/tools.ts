@@ -10,6 +10,7 @@ import {
   Radio,
   RadioTower,
   Ruler,
+  Scale,
   Waypoints,
 } from 'lucide-react'
 import type { ComponentType } from 'react'
@@ -19,6 +20,7 @@ import { FormatConverterTool } from '@/pages/tools/format-converter'
 import { HashingTool } from '@/pages/tools/hashing'
 import { Ipv4SubnetTool } from '@/pages/tools/ipv4-subnet'
 import { Ipv6SubnetTool } from '@/pages/tools/ipv6-subnet'
+import { LicensesTool } from '@/pages/tools/licenses'
 import { NatoTool } from '@/pages/tools/nato'
 import { RfChannelTool } from '@/pages/tools/rf-channel'
 import { ScheduleTool } from '@/pages/tools/schedule'
@@ -136,5 +138,13 @@ export const tools: Tool[] = [
     description: 'Convert length, weight, temperature, speed, area and volume.',
     icon: Ruler,
     component: UnitConverterTool,
+  },
+  {
+    id: 'licenses',
+    name: 'Licenses',
+    path: '/tools/licenses',
+    description: 'Copy full text of BSD, GPL and LGPL open source licenses.',
+    icon: Scale,
+    component: LicensesTool,
   },
 ]
