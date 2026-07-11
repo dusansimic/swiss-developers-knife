@@ -9,6 +9,7 @@ import {
   Network,
   Radio,
   RadioTower,
+  Ruler,
   Waypoints,
 } from 'lucide-react'
 import type { ComponentType } from 'react'
@@ -21,6 +22,7 @@ import { Ipv6SubnetTool } from '@/pages/tools/ipv6-subnet'
 import { NatoTool } from '@/pages/tools/nato'
 import { RfChannelTool } from '@/pages/tools/rf-channel'
 import { ScheduleTool } from '@/pages/tools/schedule'
+import { UnitConverterTool } from '@/pages/tools/unit-converter'
 import { UuidTool } from '@/pages/tools/uuid'
 
 /**
@@ -126,5 +128,13 @@ export const tools: Tool[] = [
     description: 'Convert structured data between JSON, YAML and TOML.',
     icon: ArrowLeftRight,
     component: FormatConverterTool,
+  },
+  {
+    id: 'unit-converter',
+    name: 'Unit Converter',
+    path: '/tools/unit-converter',
+    description: 'Convert length, weight, temperature, speed, area and volume.',
+    icon: Ruler,
+    component: UnitConverterTool,
   },
 ]
