@@ -14,11 +14,15 @@ on:
 jobs:
   image:
     runs-on: ubuntu-latest
-    env:
-      IMAGE: ghcr.io/${{ github.repository }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
+      - name: Compute image reference
+        run: |
+          echo "REGISTRY=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
+          name="${GITHUB_REPOSITORY##*/}"
+          echo "IMAGE_NAME=${name,,}" >> "$GITHUB_ENV"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -39,7 +43,7 @@ jobs:
         id: build
         uses: redhat-actions/buildah-build@v2
         with:
-          image: ${{ env.IMAGE }}
+          image: ${{ env.IMAGE_NAME }}
           tags: ${{ inputs.tags }}
           containerfiles: ./Containerfile
 
@@ -55,3 +59,4 @@ jobs:
         with:
           image: ${{ steps.build.outputs.image }}
           tags: ${{ steps.build.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
