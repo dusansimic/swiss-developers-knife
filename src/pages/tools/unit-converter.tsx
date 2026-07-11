@@ -94,13 +94,15 @@ export function UnitConverterTool() {
       </div>
 
       <Tabs value={categoryId} onValueChange={setCategoryId}>
-        <TabsList className="flex-wrap">
-          {CATEGORIES.map((category) => (
-            <TabsTrigger key={category.id} value={category.id}>
-              {category.name}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList>
+            {CATEGORIES.map((category) => (
+              <TabsTrigger key={category.id} value={category.id}>
+                {category.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
 
         {CATEGORIES.map((category) => (
           <TabsContent key={category.id} value={category.id} className="pt-2">

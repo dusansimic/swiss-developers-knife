@@ -4,11 +4,13 @@ import { ModeToggle } from '@/components/mode-toggle'
 import { tools } from '@/lib/tools'
 import { cn } from '@/lib/utils'
 
-export function Sidebar() {
+/** The sidebar's inner content, reused by the desktop aside and mobile drawer. */
+export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <aside className="flex h-svh w-64 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground">
+    <div className="flex h-full flex-col">
       <NavLink
         to="/"
+        onClick={onNavigate}
         className="flex items-center gap-2 border-b px-5 py-4 font-semibold"
       >
         <PocketKnife className="h-6 w-6 text-primary" />
@@ -28,6 +30,7 @@ export function Sidebar() {
             <li key={tool.id}>
               <NavLink
                 to={tool.path}
+                onClick={onNavigate}
                 className={({ isActive }) =>
                   cn(
                     'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
@@ -49,6 +52,15 @@ export function Sidebar() {
         <span className="text-xs text-muted-foreground">Theme</span>
         <ModeToggle />
       </div>
+    </div>
+  )
+}
+
+/** Persistent sidebar, shown from the `md` breakpoint up. */
+export function Sidebar() {
+  return (
+    <aside className="hidden h-svh w-64 shrink-0 border-r bg-sidebar text-sidebar-foreground md:block">
+      <SidebarContent />
     </aside>
   )
 }
