@@ -6,44 +6,54 @@
  * are supported — any other character is not part of the alphabet.
  */
 
-export const NATO_ALPHABET: Record<string, string> = {
-  A: 'Alfa',
-  B: 'Bravo',
-  C: 'Charlie',
-  D: 'Delta',
-  E: 'Echo',
-  F: 'Foxtrot',
-  G: 'Golf',
-  H: 'Hotel',
-  I: 'India',
-  J: 'Juliett',
-  K: 'Kilo',
-  L: 'Lima',
-  M: 'Mike',
-  N: 'November',
-  O: 'Oscar',
-  P: 'Papa',
-  Q: 'Quebec',
-  R: 'Romeo',
-  S: 'Sierra',
-  T: 'Tango',
-  U: 'Uniform',
-  V: 'Victor',
-  W: 'Whiskey',
-  X: 'X-ray',
-  Y: 'Yankee',
-  Z: 'Zulu',
-  '0': 'Zero',
-  '1': 'One',
-  '2': 'Two',
-  '3': 'Three',
-  '4': 'Four',
-  '5': 'Five',
-  '6': 'Six',
-  '7': 'Seven',
-  '8': 'Eight',
-  '9': 'Nine',
+export interface NatoEntry {
+  letter: string
+  word: string
 }
+
+/** The alphabet in display order (A-Z, then 0-9). */
+export const NATO_ENTRIES: NatoEntry[] = [
+  { letter: 'A', word: 'Alfa' },
+  { letter: 'B', word: 'Bravo' },
+  { letter: 'C', word: 'Charlie' },
+  { letter: 'D', word: 'Delta' },
+  { letter: 'E', word: 'Echo' },
+  { letter: 'F', word: 'Foxtrot' },
+  { letter: 'G', word: 'Golf' },
+  { letter: 'H', word: 'Hotel' },
+  { letter: 'I', word: 'India' },
+  { letter: 'J', word: 'Juliett' },
+  { letter: 'K', word: 'Kilo' },
+  { letter: 'L', word: 'Lima' },
+  { letter: 'M', word: 'Mike' },
+  { letter: 'N', word: 'November' },
+  { letter: 'O', word: 'Oscar' },
+  { letter: 'P', word: 'Papa' },
+  { letter: 'Q', word: 'Quebec' },
+  { letter: 'R', word: 'Romeo' },
+  { letter: 'S', word: 'Sierra' },
+  { letter: 'T', word: 'Tango' },
+  { letter: 'U', word: 'Uniform' },
+  { letter: 'V', word: 'Victor' },
+  { letter: 'W', word: 'Whiskey' },
+  { letter: 'X', word: 'X-ray' },
+  { letter: 'Y', word: 'Yankee' },
+  { letter: 'Z', word: 'Zulu' },
+  { letter: '0', word: 'Zero' },
+  { letter: '1', word: 'One' },
+  { letter: '2', word: 'Two' },
+  { letter: '3', word: 'Three' },
+  { letter: '4', word: 'Four' },
+  { letter: '5', word: 'Five' },
+  { letter: '6', word: 'Six' },
+  { letter: '7', word: 'Seven' },
+  { letter: '8', word: 'Eight' },
+  { letter: '9', word: 'Nine' },
+]
+
+export const NATO_ALPHABET: Record<string, string> = Object.fromEntries(
+  NATO_ENTRIES.map((e) => [e.letter, e.word]),
+)
 
 /** Matches a single disallowed character (anything but ASCII letters/digits). */
 const DISALLOWED = /[^A-Za-z0-9]/g
