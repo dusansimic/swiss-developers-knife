@@ -1,6 +1,6 @@
-import { TriangleAlert } from 'lucide-react'
+import { RotateCcw, TriangleAlert } from 'lucide-react'
 import { useState } from 'react'
-import { Calendar } from '@/components/ui/calendar'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {
+  expandField,
   type FieldKey,
   fieldSingle,
   formatCron,
@@ -19,14 +20,25 @@ import {
   parseCron,
   parseSystemd,
   type Schedule,
-  withDate,
   withField,
+  withValues,
 } from '@/lib/schedule'
+import { cn } from '@/lib/utils'
 
 const INITIAL_CRON = '0 9 * * 1-5'
-const REFERENCE_YEAR = new Date().getFullYear()
 const HOURS = Array.from({ length: 24 }, (_, h) => h)
 const MINUTES = Array.from({ length: 60 }, (_, m) => m)
+const DAYS_OF_MONTH = Array.from({ length: 31 }, (_, d) => d + 1)
+// Weekday buttons in ISO order; values are cron numbers (Sun = 0).
+const WEEKDAYS = [
+  { label: 'Mon', value: 1 },
+  { label: 'Tue', value: 2 },
+  { label: 'Wed', value: 3 },
+  { label: 'Thu', value: 4 },
+  { label: 'Fri', value: 5 },
+  { label: 'Sat', value: 6 },
+  { label: 'Sun', value: 0 },
+]
 const ANY = 'any'
 
 function errorMessage(err: unknown): string {
@@ -42,7 +54,6 @@ export function ScheduleTool() {
   const [cronError, setCronError] = useState<string | null>(null)
   const [systemdError, setSystemdError] = useState<string | null>(null)
 
-  /** Adopt a new schedule and refresh every representation. */
   function applySchedule(next: Schedule) {
     setSchedule(next)
     setCronText(formatCron(next))
@@ -81,14 +92,27 @@ export function ScheduleTool() {
     applySchedule(withField(schedule, key, raw === ANY ? null : Number(raw)))
   }
 
+  const domSet = new Set(expandField(schedule.dom, 1, 31) ?? [])
+  const dowSet = new Set(
+    (expandField(schedule.dow, 0, 7) ?? []).map((v) => (v === 7 ? 0 : v)),
+  )
+
+  function toggleDom(day: number) {
+    const next = new Set(domSet)
+    if (next.has(day)) next.delete(day)
+    else next.add(day)
+    applySchedule(withValues(schedule, 'dom', [...next]))
+  }
+
+  function toggleDow(value: number) {
+    const next = new Set(dowSet)
+    if (next.has(value)) next.delete(value)
+    else next.add(value)
+    applySchedule(withValues(schedule, 'dow', [...next]))
+  }
+
   const hourValue = fieldSingle(schedule.hour)
   const minuteValue = fieldSingle(schedule.minute)
-  const monthValue = fieldSingle(schedule.month)
-  const domValue = fieldSingle(schedule.dom)
-  const selectedDate =
-    monthValue !== null && domValue !== null
-      ? new Date(REFERENCE_YEAR, monthValue - 1, domValue)
-      : undefined
 
   return (
     <div className="space-y-6">
@@ -97,8 +121,8 @@ export function ScheduleTool() {
           Schedule Converter
         </h1>
         <p className="text-muted-foreground">
-          Convert between cron, systemd <code>OnCalendar</code>, and a date/time
-          picker. Editing any one updates the others.
+          Convert between cron, systemd <code>OnCalendar</code>, and pickers.
+          Editing any one updates the others.
         </p>
       </div>
 
@@ -141,69 +165,133 @@ export function ScheduleTool() {
         </div>
       )}
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      {/* Day of month — independent from weekday, so it is a plain 1-31 grid. */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label>Day of month</Label>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              applySchedule({ ...schedule, dom: { wildcard: true } })
+            }
+            disabled={schedule.dom.wildcard}
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Reset
+          </Button>
+        </div>
+        <div className="grid grid-cols-7 gap-1">
+          {DAYS_OF_MONTH.map((day) => (
+            <button
+              key={day}
+              type="button"
+              onClick={() => toggleDom(day)}
+              className={cn(
+                'flex h-9 items-center justify-center rounded-md border text-sm transition-colors',
+                domSet.has(day)
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'hover:bg-accent hover:text-accent-foreground',
+              )}
+            >
+              {day}
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {schedule.dom.wildcard
+            ? 'Every day of the month (*).'
+            : 'Runs on the selected days.'}
+        </p>
+      </div>
+
+      {/* Day of week — separate field; cron/systemd both treat it independently. */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label>Day of week</Label>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              applySchedule({ ...schedule, dow: { wildcard: true } })
+            }
+            disabled={schedule.dow.wildcard}
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Reset
+          </Button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {WEEKDAYS.map((day) => (
+            <button
+              key={day.value}
+              type="button"
+              onClick={() => toggleDow(day.value)}
+              className={cn(
+                'w-14 rounded-md border py-2 text-sm transition-colors',
+                dowSet.has(day.value)
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'hover:bg-accent hover:text-accent-foreground',
+              )}
+            >
+              {day.label}
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {schedule.dow.wildcard
+            ? 'Every day of the week (*).'
+            : 'Runs on the selected weekdays.'}
+        </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label>Date (month &amp; day-of-month)</Label>
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={(date) => applySchedule(withDate(schedule, date ?? null))}
-            className="rounded-md border"
-          />
-          <p className="text-xs text-muted-foreground">
-            Picks a specific month + day. Clear it (click the selected day) for
-            “every day/month”. Weekday is edited via the fields above.
-          </p>
+          <Label htmlFor="hour-select">Hour</Label>
+          <Select
+            value={hourValue === null ? ANY : String(hourValue)}
+            onValueChange={(v) => setTimeField('hour', v)}
+          >
+            <SelectTrigger id="hour-select" className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ANY}>Any hour</SelectItem>
+              {HOURS.map((h) => (
+                <SelectItem key={h} value={String(h)}>
+                  {String(h).padStart(2, '0')}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="hour-select">Hour</Label>
-            <Select
-              value={hourValue === null ? ANY : String(hourValue)}
-              onValueChange={(v) => setTimeField('hour', v)}
-            >
-              <SelectTrigger id="hour-select" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={ANY}>Any hour</SelectItem>
-                {HOURS.map((h) => (
-                  <SelectItem key={h} value={String(h)}>
-                    {String(h).padStart(2, '0')}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="minute-select">Minute</Label>
-            <Select
-              value={minuteValue === null ? ANY : String(minuteValue)}
-              onValueChange={(v) => setTimeField('minute', v)}
-            >
-              <SelectTrigger id="minute-select" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={ANY}>Any minute</SelectItem>
-                {MINUTES.map((m) => (
-                  <SelectItem key={m} value={String(m)}>
-                    {String(m).padStart(2, '0')}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <p className="text-xs text-muted-foreground">
-            “Any” maps to <code>*</code>. Steps, ranges and lists (e.g.{' '}
-            <code>*/5</code>) show as “Any” here — edit them in the fields
-            above.
-          </p>
+        <div className="space-y-2">
+          <Label htmlFor="minute-select">Minute</Label>
+          <Select
+            value={minuteValue === null ? ANY : String(minuteValue)}
+            onValueChange={(v) => setTimeField('minute', v)}
+          >
+            <SelectTrigger id="minute-select" className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ANY}>Any minute</SelectItem>
+              {MINUTES.map((m) => (
+                <SelectItem key={m} value={String(m)}>
+                  {String(m).padStart(2, '0')}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
+
+      <p className="text-xs text-muted-foreground">
+        Hour/minute “Any” maps to <code>*</code>. Steps, ranges and lists (e.g.{' '}
+        <code>*/5</code>) show as “Any” — edit them in the fields above. The
+        month field is edited via the cron/systemd fields.
+      </p>
     </div>
   )
 }

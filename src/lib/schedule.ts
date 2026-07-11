@@ -383,19 +383,46 @@ export function withField(
   return { ...schedule, [key]: field }
 }
 
-/** Set month + day-of-month from a Date, or clear both when date is null. */
-export function withDate(schedule: Schedule, date: Date | null): Schedule {
-  if (date === null) {
-    return { ...schedule, month: { wildcard: true }, dom: { wildcard: true } }
+/**
+ * Expand a field into the explicit sorted list of values it matches within
+ * [min, max], or null when the field is a wildcard ("every value").
+ */
+export function expandField(
+  field: Field,
+  min: number,
+  max: number,
+): number[] | null {
+  if (field.wildcard) return null
+  const set = new Set<number>()
+  for (const part of field.parts) {
+    if (part.kind === 'value') {
+      set.add(part.value)
+    } else if (part.kind === 'range') {
+      for (let v = part.from; v <= part.to; v++) set.add(v)
+    } else {
+      const start = part.from ?? min
+      const end = part.to ?? max
+      for (let v = start; v <= end; v += part.step) set.add(v)
+    }
   }
-  return {
-    ...schedule,
-    month: {
-      wildcard: false,
-      parts: [{ kind: 'value', value: date.getMonth() + 1 }],
-    },
-    dom: { wildcard: false, parts: [{ kind: 'value', value: date.getDate() }] },
-  }
+  return [...set].filter((v) => v >= min && v <= max).sort((a, b) => a - b)
+}
+
+/** Set a field to an explicit list of values, or wildcard when the list is empty. */
+export function withValues(
+  schedule: Schedule,
+  key: FieldKey,
+  values: number[],
+): Schedule {
+  const unique = [...new Set(values)].sort((a, b) => a - b)
+  const field: Field =
+    unique.length === 0
+      ? { wildcard: true }
+      : {
+          wildcard: false,
+          parts: unique.map((value) => ({ kind: 'value', value })),
+        }
+  return { ...schedule, [key]: field }
 }
 
 /** True when both day-of-month and weekday are restricted (AND/OR mismatch). */
