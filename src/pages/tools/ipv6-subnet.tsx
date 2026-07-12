@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { PrefixCombobox } from '@/components/prefix-combobox'
-import { ReservedOverlaps } from '@/components/reserved-overlaps'
 import { ResultField } from '@/components/result-field'
+import { SubnetOverlaps } from '@/components/subnet-overlaps'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -18,7 +18,7 @@ import {
   type Ipv6Format,
   ipv6PrefixOptions,
 } from '@/lib/ipv6'
-import { findReservedOverlapsV6 } from '@/lib/reserved-ips'
+import { findReservedOverlapsV6, overlapsPublicV6 } from '@/lib/reserved-ips'
 
 export function Ipv6SubnetTool() {
   const [address, setAddress] = useState('2001:db8:abcd:12::1')
@@ -113,8 +113,12 @@ export function Ipv6SubnetTool() {
             />
             <ResultField label="End address" value={result.data.endAddress} />
           </div>
-          <ReservedOverlaps
-            overlaps={findReservedOverlapsV6(
+          <SubnetOverlaps
+            reserved={findReservedOverlapsV6(
+              result.data.rangeStart,
+              result.data.rangeEnd,
+            )}
+            publicOverlap={overlapsPublicV6(
               result.data.rangeStart,
               result.data.rangeEnd,
             )}

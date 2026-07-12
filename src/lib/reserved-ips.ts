@@ -122,3 +122,38 @@ export function findReservedOverlapsV6(
     ({ cidr, description }) => ({ cidr, description }),
   )
 }
+
+/**
+ * True when the block [start, end] contains any address that is NOT in a
+ * reserved range — i.e. it includes public, globally-routable space. Works by
+ * checking whether the reserved ranges fully cover the block.
+ */
+export function overlapsPublicV4(start: number, end: number): boolean {
+  const ranges = RESERVED_IPV4.filter((r) => start <= r.end && r.start <= end)
+    .map((r) => ({ s: Math.max(r.start, start), e: Math.min(r.end, end) }))
+    .sort((a, b) => a.s - b.s)
+  let cursor = start
+  for (const { s, e } of ranges) {
+    if (s > cursor) return true // uncovered gap before this reserved range
+    if (e >= cursor) cursor = e + 1
+    if (cursor > end) return false // covered through the end
+  }
+  return cursor <= end // uncovered tail
+}
+
+/** True when an IPv6 block includes public (non-reserved) space. */
+export function overlapsPublicV6(start: bigint, end: bigint): boolean {
+  const ranges = RESERVED_IPV6.filter((r) => start <= r.end && r.start <= end)
+    .map((r) => ({
+      s: r.start > start ? r.start : start,
+      e: r.end < end ? r.end : end,
+    }))
+    .sort((a, b) => (a.s < b.s ? -1 : a.s > b.s ? 1 : 0))
+  let cursor = start
+  for (const { s, e } of ranges) {
+    if (s > cursor) return true
+    if (e >= cursor) cursor = e + 1n
+    if (cursor > end) return false
+  }
+  return cursor <= end
+}

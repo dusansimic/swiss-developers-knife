@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react'
 import { PrefixCombobox } from '@/components/prefix-combobox'
-import { ReservedOverlaps } from '@/components/reserved-overlaps'
 import { ResultField } from '@/components/result-field'
+import { SubnetOverlaps } from '@/components/subnet-overlaps'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { calculateIpv4, ipv4PrefixOptions } from '@/lib/ipv4'
-import { findReservedOverlapsV4 } from '@/lib/reserved-ips'
+import { findReservedOverlapsV4, overlapsPublicV4 } from '@/lib/reserved-ips'
 
 const PREFIX_OPTIONS = ipv4PrefixOptions()
 
@@ -85,8 +85,12 @@ export function Ipv4SubnetTool() {
               value={result.data.usableHosts.toLocaleString()}
             />
           </div>
-          <ReservedOverlaps
-            overlaps={findReservedOverlapsV4(
+          <SubnetOverlaps
+            reserved={findReservedOverlapsV4(
+              result.data.rangeStart,
+              result.data.rangeEnd,
+            )}
+            publicOverlap={overlapsPublicV4(
               result.data.rangeStart,
               result.data.rangeEnd,
             )}
