@@ -14,20 +14,62 @@ import {
   Scale,
   Waypoints,
 } from 'lucide-react'
-import type { ComponentType } from 'react'
-import { Base62Tool } from '@/pages/tools/base62'
-import { Base64Tool } from '@/pages/tools/base64'
-import { FormatConverterTool } from '@/pages/tools/format-converter'
-import { HashingTool } from '@/pages/tools/hashing'
-import { Ipv4SubnetTool } from '@/pages/tools/ipv4-subnet'
-import { Ipv6SubnetTool } from '@/pages/tools/ipv6-subnet'
-import { LicensesTool } from '@/pages/tools/licenses'
-import { PhoneticTool } from '@/pages/tools/phonetic'
-import { RfChannelTool } from '@/pages/tools/rf-channel'
-import { ScheduleTool } from '@/pages/tools/schedule'
-import { UnitConverterTool } from '@/pages/tools/unit-converter'
-import { UuidTool } from '@/pages/tools/uuid'
-import { VcardTool } from '@/pages/tools/vcard'
+import { type ComponentType, type LazyExoticComponent, lazy } from 'react'
+
+/**
+ * Tool pages are code-split: each is a lazy chunk loaded only when its route is
+ * opened. Keeps heavy deps (e.g. React Flow) out of the initial bundle. The
+ * named export is unwrapped to the `default` React.lazy expects.
+ */
+const Base64Tool = lazy(() =>
+  import('@/pages/tools/base64').then((m) => ({ default: m.Base64Tool })),
+)
+const Base62Tool = lazy(() =>
+  import('@/pages/tools/base62').then((m) => ({ default: m.Base62Tool })),
+)
+const Ipv4SubnetTool = lazy(() =>
+  import('@/pages/tools/ipv4-subnet').then((m) => ({
+    default: m.Ipv4SubnetTool,
+  })),
+)
+const Ipv6SubnetTool = lazy(() =>
+  import('@/pages/tools/ipv6-subnet').then((m) => ({
+    default: m.Ipv6SubnetTool,
+  })),
+)
+const PhoneticTool = lazy(() =>
+  import('@/pages/tools/phonetic').then((m) => ({ default: m.PhoneticTool })),
+)
+const UuidTool = lazy(() =>
+  import('@/pages/tools/uuid').then((m) => ({ default: m.UuidTool })),
+)
+const ScheduleTool = lazy(() =>
+  import('@/pages/tools/schedule').then((m) => ({ default: m.ScheduleTool })),
+)
+const RfChannelTool = lazy(() =>
+  import('@/pages/tools/rf-channel').then((m) => ({
+    default: m.RfChannelTool,
+  })),
+)
+const HashingTool = lazy(() =>
+  import('@/pages/tools/hashing').then((m) => ({ default: m.HashingTool })),
+)
+const FormatConverterTool = lazy(() =>
+  import('@/pages/tools/format-converter').then((m) => ({
+    default: m.FormatConverterTool,
+  })),
+)
+const UnitConverterTool = lazy(() =>
+  import('@/pages/tools/unit-converter').then((m) => ({
+    default: m.UnitConverterTool,
+  })),
+)
+const LicensesTool = lazy(() =>
+  import('@/pages/tools/licenses').then((m) => ({ default: m.LicensesTool })),
+)
+const VcardTool = lazy(() =>
+  import('@/pages/tools/vcard').then((m) => ({ default: m.VcardTool })),
+)
 
 /**
  * Central registry of every tool in the app.
@@ -46,8 +88,8 @@ export type Tool = {
   description: string
   /** Nav icon. */
   icon: LucideIcon
-  /** Page component rendered at `path`. */
-  component: ComponentType
+  /** Page component rendered at `path` (lazy-loaded chunk). */
+  component: LazyExoticComponent<ComponentType>
 }
 
 export const tools: Tool[] = [
