@@ -45,6 +45,19 @@ adopt it** — see "Evolving the standards" below.
    (`id`, `name`, `path`, `description`, `icon`, `component`).
 3. That's it — nav link and `/tools/<tool>` route appear automatically.
 
+**Code-splitting (required).** Tool pages are lazy-loaded so heavy per-tool
+deps stay out of the initial bundle. In `src/lib/tools.ts` the `component` is a
+`React.lazy` chunk that unwraps the named export:
+
+```ts
+const FooTool = lazy(() =>
+  import('@/pages/tools/foo').then((m) => ({ default: m.FooTool })),
+)
+```
+
+The router (`src/App.tsx`) already wraps every tool route in `<Suspense>`, so
+nothing else changes when adding a tool — just follow the `lazy(...)` form.
+
 ## Committing
 
 When the Lord asks to commit code:
