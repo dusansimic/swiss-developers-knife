@@ -3,6 +3,7 @@ import {
   Binary,
   CalendarClock,
   Contact,
+  Container,
   FileDigit,
   Fingerprint,
   Hash,
@@ -57,6 +58,11 @@ const HashingTool = lazy(() =>
 const FormatConverterTool = lazy(() =>
   import('@/pages/tools/format-converter').then((m) => ({
     default: m.FormatConverterTool,
+  })),
+)
+const DockerComposeTool = lazy(() =>
+  import('@/pages/tools/docker-compose').then((m) => ({
+    default: m.DockerComposeTool,
   })),
 )
 const UnitConverterTool = lazy(() =>
@@ -174,6 +180,14 @@ export const tools: Tool[] = [
     description: 'Convert structured data between JSON, YAML and TOML.',
     icon: ArrowLeftRight,
     component: FormatConverterTool,
+  },
+  {
+    id: 'docker-compose',
+    name: 'Docker Compose',
+    path: '/tools/docker-compose',
+    description: 'Render Compose services, networks and volumes as a diagram.',
+    icon: Container,
+    component: DockerComposeTool,
   },
   {
     id: 'unit-converter',
