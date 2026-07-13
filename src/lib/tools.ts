@@ -4,6 +4,7 @@ import {
   CalendarClock,
   Contact,
   Container,
+  Dices,
   FileDigit,
   Fingerprint,
   Hash,
@@ -43,6 +44,11 @@ const PhoneticTool = lazy(() =>
 )
 const UuidTool = lazy(() =>
   import('@/pages/tools/uuid').then((m) => ({ default: m.UuidTool })),
+)
+const RandomBytesTool = lazy(() =>
+  import('@/pages/tools/random-bytes').then((m) => ({
+    default: m.RandomBytesTool,
+  })),
 )
 const ScheduleTool = lazy(() =>
   import('@/pages/tools/schedule').then((m) => ({ default: m.ScheduleTool })),
@@ -147,6 +153,15 @@ export const tools: Tool[] = [
       'Generate v1, v4, v5 and v7 UUIDs, plus nil and max constants.',
     icon: Fingerprint,
     component: UuidTool,
+  },
+  {
+    id: 'random-bytes',
+    name: 'Random Bytes',
+    path: '/tools/random-bytes',
+    description:
+      'Generate secure random bytes as hex, Base64 or Base62 (openssl rand).',
+    icon: Dices,
+    component: RandomBytesTool,
   },
   {
     id: 'schedule',
