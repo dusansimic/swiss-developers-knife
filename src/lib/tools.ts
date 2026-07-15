@@ -1,6 +1,7 @@
 import {
   ArrowLeftRight,
   Binary,
+  Calculator,
   CalendarClock,
   Contact,
   Container,
@@ -28,6 +29,11 @@ const Base64Tool = lazy(() =>
 )
 const Base62Tool = lazy(() =>
   import('@/pages/tools/base62').then((m) => ({ default: m.Base62Tool })),
+)
+const BaseConverterTool = lazy(() =>
+  import('@/pages/tools/base-converter').then((m) => ({
+    default: m.BaseConverterTool,
+  })),
 )
 const Ipv4SubnetTool = lazy(() =>
   import('@/pages/tools/ipv4-subnet').then((m) => ({
@@ -120,6 +126,15 @@ export const tools: Tool[] = [
     description: 'Encode and decode Base62 strings (UTF-8 safe).',
     icon: Hash,
     component: Base62Tool,
+  },
+  {
+    id: 'base-converter',
+    name: 'Base Converter',
+    path: '/tools/base-converter',
+    description:
+      'Convert between binary, octal, decimal and hex with signed/unsigned.',
+    icon: Calculator,
+    component: BaseConverterTool,
   },
   {
     id: 'ipv4-subnet',
