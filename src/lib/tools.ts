@@ -15,6 +15,7 @@ import {
   RadioTower,
   Ruler,
   Scale,
+  Sigma,
   Waypoints,
 } from 'lucide-react'
 import { type ComponentType, type LazyExoticComponent, lazy } from 'react'
@@ -33,6 +34,11 @@ const Base62Tool = lazy(() =>
 const BaseConverterTool = lazy(() =>
   import('@/pages/tools/base-converter').then((m) => ({
     default: m.BaseConverterTool,
+  })),
+)
+const FloatConverterTool = lazy(() =>
+  import('@/pages/tools/float-converter').then((m) => ({
+    default: m.FloatConverterTool,
   })),
 )
 const Ipv4SubnetTool = lazy(() =>
@@ -135,6 +141,15 @@ export const tools: Tool[] = [
       'Convert between binary, octal, decimal and hex with signed/unsigned.',
     icon: Calculator,
     component: BaseConverterTool,
+  },
+  {
+    id: 'float-converter',
+    name: 'Float Converter',
+    path: '/tools/float-converter',
+    description:
+      'Convert between decimal and IEEE 754 float/double binary bits.',
+    icon: Sigma,
+    component: FloatConverterTool,
   },
   {
     id: 'ipv4-subnet',
