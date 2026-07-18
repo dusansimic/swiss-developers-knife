@@ -16,6 +16,7 @@ import {
   Ruler,
   Scale,
   Sigma,
+  Vote,
   Waypoints,
 } from 'lucide-react'
 import { type ComponentType, type LazyExoticComponent, lazy } from 'react'
@@ -40,6 +41,9 @@ const FloatConverterTool = lazy(() =>
   import('@/pages/tools/float-converter').then((m) => ({
     default: m.FloatConverterTool,
   })),
+)
+const VotingTool = lazy(() =>
+  import('@/pages/tools/voting').then((m) => ({ default: m.VotingTool })),
 )
 const Ipv4SubnetTool = lazy(() =>
   import('@/pages/tools/ipv4-subnet').then((m) => ({
@@ -233,6 +237,15 @@ export const tools: Tool[] = [
     description: 'Render Compose services, networks and volumes as a diagram.',
     icon: Container,
     component: DockerComposeTool,
+  },
+  {
+    id: 'voting',
+    name: 'Preferential Voting',
+    path: '/tools/voting',
+    description:
+      'Run instant-runoff (ranked-choice) voting with per-round results.',
+    icon: Vote,
+    component: VotingTool,
   },
   {
     id: 'unit-converter',
