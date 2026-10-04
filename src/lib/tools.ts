@@ -11,6 +11,7 @@ import {
   Hash,
   type LucideIcon,
   Network,
+  PawPrint,
   Radio,
   RadioTower,
   Ruler,
@@ -64,6 +65,11 @@ const UuidTool = lazy(() =>
 const RandomBytesTool = lazy(() =>
   import('@/pages/tools/random-bytes').then((m) => ({
     default: m.RandomBytesTool,
+  })),
+)
+const AdjectiveAnimalTool = lazy(() =>
+  import('@/pages/tools/adjective-animal').then((m) => ({
+    default: m.AdjectiveAnimalTool,
   })),
 )
 const ScheduleTool = lazy(() =>
@@ -196,6 +202,15 @@ export const tools: Tool[] = [
       'Generate secure random bytes as hex, Base64 or Base62 (openssl rand).',
     icon: Dices,
     component: RandomBytesTool,
+  },
+  {
+    id: 'adjective-animal',
+    name: 'Adjective Animal',
+    path: '/tools/adjective-animal',
+    description:
+      'Generate random adjective + animal names in English or Serbian.',
+    icon: PawPrint,
+    component: AdjectiveAnimalTool,
   },
   {
     id: 'schedule',

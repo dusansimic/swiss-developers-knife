@@ -1,3 +1,5 @@
+import { CYRILLIC_TO_LATIN } from '@/lib/serbian-script'
+
 /**
  * Serbian phonetic alphabet, parsing both Latin and Cyrillic script.
  *
@@ -69,40 +71,6 @@ const WORDS: Record<string, string> = Object.fromEntries(
 )
 
 const DIGRAPHS = new Set(['LJ', 'NJ', 'DŽ'])
-
-/** Cyrillic uppercase letter → canonical Latin token. */
-const CYRILLIC_TO_LATIN: Record<string, string> = {
-  А: 'A',
-  Б: 'B',
-  В: 'V',
-  Г: 'G',
-  Д: 'D',
-  Ђ: 'Đ',
-  Е: 'E',
-  Ж: 'Ž',
-  З: 'Z',
-  И: 'I',
-  Ј: 'J',
-  К: 'K',
-  Л: 'L',
-  Љ: 'LJ',
-  М: 'M',
-  Н: 'N',
-  Њ: 'NJ',
-  О: 'O',
-  П: 'P',
-  Р: 'R',
-  С: 'S',
-  Т: 'T',
-  Ћ: 'Ć',
-  У: 'U',
-  Ф: 'F',
-  Х: 'H',
-  Ц: 'C',
-  Ч: 'Č',
-  Џ: 'DŽ',
-  Ш: 'Š',
-}
 
 /** Single-codepoint Latin digraph forms → canonical token. */
 const PRECOMPOSED: Record<string, string> = {
